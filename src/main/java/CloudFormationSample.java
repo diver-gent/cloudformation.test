@@ -56,23 +56,7 @@ public class CloudFormationSample {
 
     public static void main(String[] args) throws Exception {
 
-        /*
-         * The ProfileCredentialsProvider will return your [default]
-         * credential profile by reading from the credentials file located at
-         * (~/.aws/credentials).
-         */
-        AWSCredentials credentials = null;
-        try {
-            credentials = new ProfileCredentialsProvider().getCredentials();
-        } catch (Exception e) {
-            throw new AmazonClientException(
-                    "Cannot load the credentials from the credential profiles file. " +
-                            "Please make sure that your credentials file is at the correct " +
-                            "location (~/.aws/credentials), and is in valid format.",
-                    e);
-        }
-
-        AmazonCloudFormation stackbuilder = new AmazonCloudFormationClient(credentials);
+        AmazonCloudFormation stackbuilder = new AmazonCloudFormationClient(getCreds());
         Region usWest2 = Region.getRegion(Regions.US_WEST_2);
         stackbuilder.setRegion(usWest2);
 
@@ -140,6 +124,25 @@ public class CloudFormationSample {
                     + "such as not being able to access the network.");
             System.out.println("Error Message: " + ace.getMessage());
         }
+    }
+
+    /*
+     * The ProfileCredentialsProvider will return your [default]
+     * credential profile by reading from the credentials file located at
+     * (~/.aws/credentials).
+     */
+    private static AWSCredentials getCreds() throws AmazonClientException {
+        AWSCredentials credentials = null;
+        try {
+            credentials = new ProfileCredentialsProvider().getCredentials();
+        } catch (Exception e) {
+            throw new AmazonClientException(
+                    "Cannot load the credentials from the credential profiles file. " +
+                            "Please make sure that your credentials file is at the correct " +
+                            "location (~/.aws/credentials), and is in valid format.",
+                    e);
+        }
+        return credentials;
     }
 
     // Convert a stream into a single, newline separated string
