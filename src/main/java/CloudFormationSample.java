@@ -71,14 +71,15 @@ public class CloudFormationSample {
             // Create a stack
             CreateStackRequest createRequest = new CreateStackRequest();
             createRequest.setStackName(stackName);
-            System.out.println(System.getProperty("java.class.path"));
-            createRequest.setTemplateBody(convertStreamToString(CloudFormationSample.class.getResourceAsStream("CloudFormationSample.template")));
+            createRequest.setTemplateBody(convertStreamToString(
+                    CloudFormationSample.class.getResourceAsStream("CloudFormationSample.template")));
             System.out.println("Creating a stack called " + createRequest.getStackName() + ".");
             stackbuilder.createStack(createRequest);
 
             // Wait for stack to be created
             // Note that you could use SNS notifications on the CreateStack call to track the progress of the stack creation
-            System.out.println("Stack creation completed, the stack " + stackName + " completed with " + waitForCompletion(stackbuilder, stackName));
+            System.out.println("Stack creation completed, the stack " + stackName +
+                    " completed with " + waitForCompletion(stackbuilder, stackName));
 
             // Show all the stacks for this account along with the resources for each stack
             for (Stack stack : stackbuilder.describeStacks(new DescribeStacksRequest()).getStacks()) {
@@ -87,7 +88,8 @@ public class CloudFormationSample {
                 DescribeStackResourcesRequest stackResourceRequest = new DescribeStackResourcesRequest();
                 stackResourceRequest.setStackName(stack.getStackName());
                 for (StackResource resource : stackbuilder.describeStackResources(stackResourceRequest).getStackResources()) {
-                    System.out.format("    %1$-40s %2$-25s %3$s\n", resource.getResourceType(), resource.getLogicalResourceId(), resource.getPhysicalResourceId());
+                    System.out.format("    %1$-40s %2$-25s %3$s\n", resource.getResourceType(),
+                            resource.getLogicalResourceId(), resource.getPhysicalResourceId());
                 }
             }
 
@@ -95,20 +97,23 @@ public class CloudFormationSample {
             DescribeStackResourcesRequest logicalNameResourceRequest = new DescribeStackResourcesRequest();
             logicalNameResourceRequest.setStackName(stackName);
             logicalNameResourceRequest.setLogicalResourceId(logicalResourceName);
-            System.out.format("Looking up resource name %1$s from stack %2$s\n", logicalNameResourceRequest.getLogicalResourceId(), logicalNameResourceRequest.getStackName());
+            System.out.format("Looking up resource name %1$s from stack %2$s\n",
+                    logicalNameResourceRequest.getLogicalResourceId(), logicalNameResourceRequest.getStackName());
             for (StackResource resource : stackbuilder.describeStackResources(logicalNameResourceRequest).getStackResources()) {
-                System.out.format("    %1$-40s %2$-25s %3$s\n", resource.getResourceType(), resource.getLogicalResourceId(), resource.getPhysicalResourceId());
+                System.out.format("    %1$-40s %2$-25s %3$s\n", resource.getResourceType(),
+                        resource.getLogicalResourceId(), resource.getPhysicalResourceId());
             }
 
-            // Delete the stack
-            DeleteStackRequest deleteRequest = new DeleteStackRequest();
-            deleteRequest.setStackName(stackName);
-            System.out.println("Deleting the stack called " + deleteRequest.getStackName() + ".");
-            stackbuilder.deleteStack(deleteRequest);
+            // // Delete the stack
+            // DeleteStackRequest deleteRequest = new DeleteStackRequest();
+            // deleteRequest.setStackName(stackName);
+            // System.out.println("Deleting the stack called " + deleteRequest.getStackName() + ".");
+            // stackbuilder.deleteStack(deleteRequest);
 
             // Wait for stack to be deleted
             // Note that you could used SNS notifications on the original CreateStack call to track the progress of the stack deletion
-            System.out.println("Stack creation completed, the stack " + stackName + " completed with " + waitForCompletion(stackbuilder, stackName));
+            System.out.println("Stack creation completed, the stack " + stackName +
+                    " completed with " + waitForCompletion(stackbuilder, stackName));
 
         } catch (AmazonServiceException ase) {
             System.out.println("Caught an AmazonServiceException, which means your request made it "
@@ -136,10 +141,9 @@ public class CloudFormationSample {
         try {
             credentials = new ProfileCredentialsProvider().getCredentials();
         } catch (Exception e) {
-            throw new AmazonClientException(
-                    "Cannot load the credentials from the credential profiles file. " +
-                            "Please make sure that your credentials file is at the correct " +
-                            "location (~/.aws/credentials), and is in valid format.",
+            throw new AmazonClientException("Cannot load the credentials from the credential profiles file. " +
+                    "Please make sure that your credentials file is at the correct " +
+                    "location (~/.aws/credentials), and is in valid format.",
                     e);
         }
         return credentials;
